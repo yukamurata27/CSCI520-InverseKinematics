@@ -21,4 +21,6 @@
 * Steps to compile the projects
 1) Compile ADOL-C (please follow the instruction above)
 2) Setup OpenGL (please follow the instruction above)
-3) 
+3) In Makefile, some modifications may be needed to link paths to load libraries (for OPENGL_LIBS)
+   In my case, libGL.dylib is stored in /opt/X11/lib. So I added the library path.
+   This path is still left in my Makefile.
