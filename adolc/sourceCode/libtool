@@ -1,6 +1,6 @@
 #! /bin/sh
 # Generated automatically by config.status (adolc) 2.7.0-trunk
-# Libtool was configured on host adria-3902.local:
+# Libtool was configured on host Yukas-MacBook-Air.local:
 # NOTE: Changes made to this file will be lost: look at ltmain.sh.
 
 # Provide generalized library-building support services.
@@ -76,13 +76,13 @@ PATH_SEPARATOR=":"
 
 # The host system.
 host_alias=
-host=x86_64-apple-darwin16.7.0
-host_os=darwin16.7.0
+host=x86_64-apple-darwin19.3.0
+host_os=darwin19.3.0
 
 # The build system.
 build_alias=
-build=x86_64-apple-darwin16.7.0
-build_os=darwin16.7.0
+build=x86_64-apple-darwin19.3.0
+build_os=darwin19.3.0
 
 # A sed program that does not truncate output.
 SED="/usr/bin/sed"
@@ -100,7 +100,7 @@ EGREP="/usr/bin/grep -E"
 FGREP="/usr/bin/grep -F"
 
 # A BSD- or MS-compatible name lister.
-NM="/opt/local/bin/nm -B"
+NM="/usr/bin/nm -B"
 
 # Whether we need soft or hard links.
 LN_S="ln -s"
@@ -165,7 +165,7 @@ old_postuninstall_cmds=""
 lock_old_archive_extraction=yes
 
 # A C compiler.
-LTCC="gcc -std=gnu99"
+LTCC="gcc"
 
 # LTCC compiler flags.
 LTCFLAGS="-g -O2"
@@ -285,7 +285,7 @@ finish_eval=""
 hardcode_into_libs=no
 
 # Compile-time system search path for libraries.
-sys_lib_search_path_spec="/opt/local/lib/gcc49/gcc/x86_64-apple-darwin16/4.9.4 /opt/local/lib/gcc49 /usr/lib  /usr/local/lib"
+sys_lib_search_path_spec="/Library/Developer/CommandLineTools/usr/lib/clang/10.0.0  /usr/local/lib"
 
 # Detected run-time system search path for libraries.
 sys_lib_dlsearch_path_spec="/usr/local/lib /lib /usr/lib"
@@ -308,7 +308,7 @@ striplib="strip -x"
 
 
 # The linker used to build libraries.
-LD="/opt/local/bin/ld"
+LD="/Library/Developer/CommandLineTools/usr/bin/ld"
 
 # How to create reloadable object files.
 reload_flag=" -r"
@@ -318,13 +318,13 @@ reload_cmds="\$LTCC \$LTCFLAGS -nostdlib \$wl-r -o \$output\$reload_objs"
 old_archive_cmds="\$AR \$AR_FLAGS \$oldlib\$oldobjs~\$RANLIB \$tool_oldlib"
 
 # A language specific compiler.
-CC="gcc -std=gnu99"
+CC="gcc"
 
 # Is the compiler the GNU compiler?
 with_gcc=yes
 
 # Compiler flag to turn off builtin functions.
-no_builtin_flag=" -fno-builtin"
+no_builtin_flag=" -fno-builtin -fno-rtti -fno-exceptions"
 
 # Additional compiler flags for building library objects.
 pic_flag=" -fno-common -DPIC"
@@ -7785,11 +7785,9 @@ func_mode_link ()
       # --sysroot=*          for sysroot support
       # -O*, -g*, -flto*, -fwhopr*, -fuse-linker-plugin GCC link-time optimization
       # -stdlib=*            select c++ std lib with clang
-      # -fsanitize=*         Clang memory and address sanitizer
       -64|-mips[0-9]|-r[0-9][0-9]*|-xarch=*|-xtarget=*|+DA*|+DD*|-q*|-m*| \
       -t[45]*|-txscale*|-p|-pg|--coverage|-fprofile-*|-F*|@*|-tp=*|--sysroot=*| \
-      -O*|-g*|-flto*|-fwhopr*|-fuse-linker-plugin|-fstack-protector*|-stdlib=*| \
-      -fsanitize=*)
+      -O*|-g*|-flto*|-fwhopr*|-fuse-linker-plugin|-fstack-protector*|-stdlib=*)
         func_quote_for_eval "$arg"
 	arg=$func_quote_for_eval_result
         func_append compile_command " $arg"
@@ -11663,7 +11661,7 @@ build_old_libs=`case $build_libtool_libs in yes) echo no;; *) echo yes;; esac`
 # ### BEGIN LIBTOOL TAG CONFIG: CXX
 
 # The linker used to build libraries.
-LD="/opt/local/bin/ld"
+LD="/Library/Developer/CommandLineTools/usr/bin/ld"
 
 # How to create reloadable object files.
 reload_flag=" -r"

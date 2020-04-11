@@ -14,7 +14,7 @@ ADOLC_ROOT=$(HOME)
 ADOLC_INCLUDE=-I$(ADOLC_ROOT)/adolc_base/include/
 ADOLC_LIB=-ladolc -L$(ADOLC_ROOT)/adolc_base/lib64/
 
-OPENGL_LIBS=-lGL -lGLU -lglut
+OPENGL_LIBS=-L/opt/X11/lib -lGL -lGLU -lglut
 #OPENGL_LIBS=-framework OpenGL -framework GLUT
 #OPENGL_LIBS=-framework OpenGL /usr/local/Cellar/freeglut/3.0.0/lib/libglut.dylib
 

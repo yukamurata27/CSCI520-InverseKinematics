@@ -1,2 +1,7 @@
 # Intermediate files
 *.o
+
+# Executables
+driver
+ADOLCExample
+EigenSolveExample
