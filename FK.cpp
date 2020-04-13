@@ -205,45 +205,40 @@ void FK::computeLocalAndGlobalTransforms(
     const std::vector<int> jointParents, const vector<int> & jointUpdateOrder,
     vector<RigidTransform4d> & localTransforms, vector<RigidTransform4d> & globalTransforms)
 {
-  // Students should implement this.
-  // First, compute the localTransform for each joint, using eulerAngles and jointOrientationEulerAngles,
-  // and the "euler2Rotation" function.
-  // Then, recursively compute the globalTransforms, from the root to the leaves of the hierarchy.
-  // Use the jointParents and jointUpdateOrder arrays to do so.
-  // Also useful are the Mat3d and RigidTransform4d classes defined in the Vega folder.
+  // 1) Compute localTransforms for each joint
+  double R[9];
+  double jointOrientationR[9];
+  for(int i=0; i<localTransforms.size(); i++) {
+    // Get rotation 3x3 matrix
+    euler2Rotation(eulerAngles[i], R, rotateOrders[i]);
+    euler2Rotation(jointOrientationEulerAngles[i], jointOrientationR, rotateOrders[i]);
+    
+    // Pass 4x4 transformation matrix
+    Mat3d localR = asMat3d(jointOrientationR) * asMat3d(R);
+    localTransforms[i] = RigidTransform4d(localR, translations[i]);
+  }
 
-  // The following is just a dummy implementation that should be replaced.
-  double identity[16] = {
-    1, 0, 0, 0,
-    0, 1, 0, 0,
-    0, 0, 1, 0,
-    0, 0, 0, 1 };
-  for(int i=0; i<localTransforms.size(); i++)
+  // 2) Recursively compute globalTransforms (root -> leaves)
+  for(int i=0; i<globalTransforms.size(); i++)
   {
-    localTransforms[i] = RigidTransform4d(identity);
-    globalTransforms[i] = RigidTransform4d(identity);
+    int curIdx = jointUpdateOrder[i];
+    int parentIdx = jointParents[curIdx];
+
+    if (parentIdx == -1) // Root
+      globalTransforms[curIdx] = localTransforms[curIdx];
+    else
+      globalTransforms[curIdx] = globalTransforms[parentIdx] * localTransforms[curIdx];
   }
 }
 
-// Compute skinning transformations for all the joints, using the formula:
-// skinTransform = globalTransform * invRestTransform
+// Compute skinning transformations for all the joints
 void FK::computeSkinningTransforms(
     const vector<RigidTransform4d> & globalTransforms, 
     const vector<RigidTransform4d> & invRestGlobalTransforms,
     vector<RigidTransform4d> & skinTransforms)
 {
-  // Students should implement this.
-
-  // The following is just a dummy implementation that should be replaced.
-  double identity[16] = {
-    1, 0, 0, 0,
-    0, 1, 0, 0,
-    0, 0, 1, 0,
-    0, 0, 0, 1 };
   for(int i=0; i<skinTransforms.size(); i++)
-  {
-    skinTransforms[i] = RigidTransform4d(identity);
-  }
+    skinTransforms[i] = globalTransforms[i] * invRestGlobalTransforms[i];
 }
 
 void FK::computeJointTransforms()
