@@ -73,14 +73,28 @@ Skinning::Skinning(int numMeshVertices, const double * restMeshVertexPositions,
 
 void Skinning::applySkinning(const RigidTransform4d * jointSkinTransforms, double * newMeshVertexPositions) const
 {
-  // Students should implement this
-
-  // The following below is just a dummy implementation.
-  for(int i=0; i<numMeshVertices; i++)
+  // pi = SUM( wj * Mj * pi_rest )
+  for (int i=0; i<numMeshVertices; i++)
   {
-    newMeshVertexPositions[3 * i + 0] = restMeshVertexPositions[3 * i + 0];
-    newMeshVertexPositions[3 * i + 1] = restMeshVertexPositions[3 * i + 1];
-    newMeshVertexPositions[3 * i + 2] = restMeshVertexPositions[3 * i + 2];
+    // Initialize to 0
+    newMeshVertexPositions[3*i+0] = 0.0;
+    newMeshVertexPositions[3*i+1] = 0.0;
+    newMeshVertexPositions[3*i+2] = 0.0;
+
+    for (int j=0; j<numJointsInfluencingEachVertex; j++)
+    {
+      int idx = i * numJointsInfluencingEachVertex + j; // look up index for meshSkinningJoints and meshSkinningWeights
+      int jointIdx = meshSkinningJoints[idx];
+
+      // Compute weighted transformed vertex position for a joint
+      Vec4d p_rest = Vec4d(restMeshVertexPositions[3*i+0], restMeshVertexPositions[3*i+1], restMeshVertexPositions[3*i+2], 0.0);
+      Vec4d p = meshSkinningWeights[idx] * jointSkinTransforms[jointIdx] * p_rest;
+
+      // Add joint's contribution
+      newMeshVertexPositions[3*i+0] += p[0];
+      newMeshVertexPositions[3*i+1] += p[1];
+      newMeshVertexPositions[3*i+2] += p[2];
+    }
   }
 }
 
