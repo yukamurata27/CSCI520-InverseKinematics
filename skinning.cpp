@@ -87,7 +87,7 @@ void Skinning::applySkinning(const RigidTransform4d * jointSkinTransforms, doubl
       int jointIdx = meshSkinningJoints[idx];
 
       // Compute weighted transformed vertex position for a joint
-      Vec4d p_rest = Vec4d(restMeshVertexPositions[3*i+0], restMeshVertexPositions[3*i+1], restMeshVertexPositions[3*i+2], 0.0);
+      Vec4d p_rest = Vec4d(restMeshVertexPositions[3*i+0], restMeshVertexPositions[3*i+1], restMeshVertexPositions[3*i+2], 1.0);
       Vec4d p = meshSkinningWeights[idx] * jointSkinTransforms[jointIdx] * p_rest;
 
       // Add joint's contribution
