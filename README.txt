@@ -1,3 +1,8 @@
+CSCI 520 Computer Animation and Simulation
+Homework 3 - Inverse Kinematics with Skinning
+
+Date: April 15, 2020
+
 * Development environment:
 	macOS Catalina (version 10.15.3)
 
