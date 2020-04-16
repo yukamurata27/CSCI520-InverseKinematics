@@ -28,3 +28,10 @@
 * Steps to install OpenGL for this project
 1) use Homebrew to install freeglut, which is an implementation of GLUT:
 	$brew install freeglut
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+Comments
+* I completed the core part of the projects.
+* I implemented recursive subdivision when the IK handle moves too far.
+  -> Please see IK.h and IK.cpp for this implementation.
