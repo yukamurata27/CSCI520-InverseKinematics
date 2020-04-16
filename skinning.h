@@ -26,6 +26,10 @@ public:
   // output: newMeshVertexPositions (length is 3*numMeshVertices)
   void applySkinning(const RigidTransform4d * jointSkinTransforms, double * newMeshVertexPositions) const;
 
+  // Two skinning methods
+  void applyLBS(const RigidTransform4d * jointSkinTransforms, double * newMeshVertexPositions) const;
+  void applyDQS(const RigidTransform4d * jointSkinTransforms, double * newMeshVertexPositions) const;
+
 protected:
   int numMeshVertices = 0;
   const double * restMeshVertexPositions = nullptr; // length of array is 3 x numMeshVertices
