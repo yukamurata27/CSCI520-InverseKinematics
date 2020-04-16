@@ -8,6 +8,7 @@
 // Jernej Barbic and Yijing Li
 
 #include <cfloat>
+#include <Eigen/Dense>
 
 class FK;
 class Vec3d;
@@ -41,6 +42,8 @@ protected:
   int FKOutputDim = 0; // forward dynamics output dimension
 
   void train_adolc();
+
+  void solveIK(double * jacobianMatrix, Eigen::VectorXd & sub_db, Eigen::VectorXd & sub_dt);
 };
 
 #endif

@@ -1,7 +1,6 @@
 #include "IK.h"
 #include "FK.h"
 #include "minivectorTemplate.h"
-#include <Eigen/Dense>
 #include <adolc/adolc.h>
 #include <cassert>
 #if defined(_WIN32) || defined(WIN32)
@@ -58,16 +57,6 @@ void forwardKinematicsFunction(
     int numIKJoints, const int * IKJointIDs, const FK & fk,
     const std::vector<real> & eulerAngles, std::vector<real> & handlePositions)
 {
-  //   Students should implement this.
-  //   The implementation of this function is very similar to function computeLocalAndGlobalTransforms in the FK class.
-  //   The recommended approach is to first implement FK::computeLocalAndGlobalTransforms.
-  //   Then, implement the same algorithm into this function. To do so,
-  // you can use fk.getJointUpdateOrder(), fk.getJointRestTranslation(), and fk.getJointRotateOrder() functions.
-  // Also useful is the multiplyAffineTransform4ds function in minivectorTemplate.h .
-  //   It would be in principle possible to unify this "forwardKinematicsFunction" and FK::computeLocalAndGlobalTransforms(),
-  //   so that code is only written once. We considered this; but it is actually not easily doable.
-  //   If you find a good approach, feel free to document it in the README file, for extra credit.
-
   // 1) Convert Euler angles to RigidTransform4d
   std::vector<Mat3<real>> localTransformsR;
   std::vector<Vec3<real>> localTransformsT;
@@ -138,14 +127,6 @@ IK::IK(int numIKJoints, const int * IKJointIDs, FK * inputFK, int adolc_tagID)
 
 void IK::train_adolc()
 {
-  // Students should implement this.
-  // Here, you should setup adol_c:
-  //   Define adol_c inputs and outputs. 
-  //   Use the "forwardKinematicsFunction" as the function that will be computed by adol_c.
-  //   This will later make it possible for you to compute the gradient of this function in IK::doIK
-  //   (in other words, compute the "Jacobian matrix" J).
-  // See ADOLCExample.cpp .
-
   // 1) Call trace_on to ask ADOL-C to begin recording how function f is implemented
   trace_on(adolc_tagID); // Start tracking computation with ADOL-C
 
@@ -169,47 +150,61 @@ void IK::train_adolc()
   trace_off(); // ADOL-C tracking finished
 }
 
+// Solve linear system with Eigen
+void IK::solveIK(double * jacobianMatrix, Eigen::VectorXd & db, Eigen::VectorXd & dt)
+{
+  double maxDistance = 0.5;
+  bool subdivide = false;
+
+  // Check if a handle moves too far
+  for(int i = 0; i < FKOutputDim; i++)
+    if (db(i) > maxDistance) subdivide = true;
+
+  // Solve IK recursively if necessary
+  if (subdivide)
+  {
+    db /= 2.0;
+    solveIK(jacobianMatrix, db, dt);
+    dt *= 2.0;
+  }
+  else
+  {
+    // Create J (mxn)
+    Eigen::MatrixXd J(FKOutputDim, FKInputDim); // Eigen column-major matrix
+    for(int rowID = 0; rowID < FKOutputDim; rowID++)
+      for(int colID = 0; colID < FKInputDim; colID++)
+        J(rowID,colID) = jacobianMatrix[FKInputDim*rowID+colID];
+
+    // Create J^T (nxm)
+    Eigen::MatrixXd JT = J.transpose();
+
+    // Create I (nxn)
+    Eigen::MatrixXd I = Eigen::MatrixXd::Identity(FKInputDim, FKInputDim);
+
+    // Solve for dt in (JT*J+a*I)dt = JT*db
+    double alpha = 0.01;
+    dt = (JT * J + alpha * I).ldlt().solve(JT * db);
+  }
+}
+
 void IK::doIK(const Vec3d * targetHandlePositions, Vec3d * jointEulerAngles)
 {
   int numJoints = fk->getNumJoints();
 
-  // Students should implement this.
-  // Use adolc to evalute the forwardKinematicsFunction and its gradient (Jacobian). It was trained in train_adolc().
-  // Specifically, use ::function, and ::jacobian .
-  // See ADOLCExample.cpp .
-  //
-  // Use it implement the Tikhonov IK method (or the pseudoinverse method for extra credit).
-  // Note that at entry, "jointEulerAngles" contains the input Euler angles. 
-  // Upon exit, jointEulerAngles should contain the new Euler angles.
-
-  // Ask ADOL-C to evaluate f for different x: y = f(x)
+  // 1) Get new handle positions with ADOL-C by solving f
   double newHandlePositions[FKOutputDim];
   for (int i = 0; i < FKOutputDim; i++)
     newHandlePositions[i] = 0.0;
   ::function(adolc_tagID, FKOutputDim, FKInputDim, jointEulerAngles->data(), newHandlePositions);
 
-  // Ask ADOL-C to evalute the jacobian matrix of f on different x: df/dx
+  // 2) Get jacobian matrix (df/dx) of f
   double jacobianMatrix[FKOutputDim*FKInputDim]; // Row-major matrix
   double * jacobianMatrixEachRow[FKOutputDim]; // Pointer array where each pointer points to one row of the jacobian matrix
   for (int i = 0; i < FKOutputDim; i++)
     jacobianMatrixEachRow[i] = &jacobianMatrix[i*FKInputDim];
   ::jacobian(adolc_tagID, FKOutputDim, FKInputDim, jointEulerAngles->data(), jacobianMatrixEachRow);
 
-  ////////////////////////////////////////////////////////////////////////////////////
-  // Solve linear system
-
-  // Create J (mxn)
-  Eigen::MatrixXd J(FKOutputDim, FKInputDim); // Eigen column-major matrix
-  for(int rowID = 0; rowID < FKOutputDim; rowID++)
-    for(int colID = 0; colID < FKInputDim; colID++)
-      J(rowID,colID) = jacobianMatrix[FKInputDim*rowID+colID];
-
-  // Create J^T (nxm)
-  Eigen::MatrixXd JT = J.transpose();
-
-  // Create I (nxn)
-  Eigen::MatrixXd I = Eigen::MatrixXd::Identity(FKInputDim, FKInputDim);
-
+  // 3) Solve IK
   // Create db (mx1) 
   Eigen::VectorXd db(FKOutputDim); // Eigen column vector
   for(int i = 0; i < numIKJoints; i++)
@@ -219,11 +214,9 @@ void IK::doIK(const Vec3d * targetHandlePositions, Vec3d * jointEulerAngles)
     db(3*i+2) = targetHandlePositions[i][2] - newHandlePositions[3*i+2]; // z
   }
 
-  // Solve for dt in (JT*J+a*I)dt = JT*db
-  double alpha = 0.01;
-  Eigen::VectorXd dt = (JT * J + alpha * I).ldlt().solve(JT * db);
-
-  // Push the result back to jointEulerAngles
+  // Update new Euler angles by solving IK
+  Eigen::VectorXd dt(FKInputDim);
+  solveIK(jacobianMatrix, db, dt);
   for(int i = 0; i < numJoints; i++)
   {
     jointEulerAngles[i][0] += dt(3*i+0); // x
