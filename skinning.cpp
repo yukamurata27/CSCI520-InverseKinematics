@@ -166,7 +166,7 @@ void Skinning::applyDQS(const RigidTransform4d * jointSkinTransforms, double * n
 
 void Skinning::applySkinning(const RigidTransform4d * jointSkinTransforms, double * newMeshVertexPositions) const
 {
-  bool useLBS = false;
+  bool useLBS = true;
 
   if (useLBS)
     applyLBS(jointSkinTransforms, newMeshVertexPositions);

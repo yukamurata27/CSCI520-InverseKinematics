@@ -150,9 +150,13 @@ void IK::train_adolc()
   trace_off(); // ADOL-C tracking finished
 }
 
+enum IKSolver { DLS, PI }; // Damped Least Squares or Pseudo-Inverse
+
 // Solve linear system with Eigen
 void IK::solveIK(double * jacobianMatrix, Eigen::VectorXd & db, Eigen::VectorXd & dt)
 {
+  IKSolver solver = DLS; // Use DLS or PI
+
   double maxDistance = 0.5;
   bool subdivide = false;
 
@@ -181,9 +185,19 @@ void IK::solveIK(double * jacobianMatrix, Eigen::VectorXd & db, Eigen::VectorXd 
     // Create I (nxn)
     Eigen::MatrixXd I = Eigen::MatrixXd::Identity(FKInputDim, FKInputDim);
 
-    // Solve for dt in (JT*J+a*I)dt = JT*db
+    // Solve IK
     double alpha = 0.01;
-    dt = (JT * J + alpha * I).ldlt().solve(JT * db);
+    switch(solver) {
+      case DLS :
+        // Solve for dt in (JT*J+a*I)dt = JT*db
+        dt = (JT * J + alpha * I).ldlt().solve(JT * db);
+        break;
+      case PI :
+        // Solve dt = J_dagger * db
+        // J_dagger = JT * (J * JT)^-1
+        dt = JT * (J * JT).inverse() * db;
+        break;
+    }
   }
 }
 
