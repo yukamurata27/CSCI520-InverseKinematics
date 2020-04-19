@@ -42,7 +42,7 @@ Core Features
 * Skinning (Linear blend skinning)
 
 Extra Features
-* Recursive subdivision for IK when the IK handle moves too far
+* Recursive subdivision for IK when the IK handle moves too far (Both for DLS and PI)
   -> Please see IK.h and IK.cpp for this implementation.
 * IK (Pseudo-inverse)
   -> Please see the solveIK function in IK.cpp.
