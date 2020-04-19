@@ -43,33 +43,33 @@ Please download XQuartz from [here](https://www.xquartz.org/)
 #### 1) Open Terminal and go to the root directory.
 
 #### 2) Compile ADOL-C:
-- A) Install necessary tools to compile ADOL-C:
+- Install necessary tools to compile ADOL-C:
 ```
 brew install autoconf automake libtool
 ```
-- B) Go to the ADOL-C folder:
+- Go to the ADOL-C folder:
 ```
 cd adolc/sourceCode/
 ```
-- C) Run:
+- Run:
 ```
 autoreconf -fi
 ```
-- D) Create a configure script:
+- Create a configure script:
 ```
 ./configure
 ```
-- E) Create a Makefile:
+- Create a Makefile:
 ```
 make
 ```
-- F) Finally run:
+- Finally run:
 ```
 make install
 ```
 
 #### 3) Setup OpenGL:
-- A) Install freeglut:
+- Install freeglut:
 ```
 brew install freeglut
 ```
