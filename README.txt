@@ -50,7 +50,7 @@ Extra Features
      You can choose DLS or PI by setting IKSolver at line 158.
 * Skinning (Dual-quaternion skinning)
   -> Please see skinning.h and skinning.cpp.
-     You can set the skinning method by setting useLBS (true/false) in the applySkinning function.
+     You can set the skinning method by setting useLBS (true/false) in the applySkinning function at line 167.
 * Comparison between damped least squares and pseudo-inverse (see blow)
 * Comparison between linear blend skinning and dual-quaternion skinning (see below)
 
@@ -60,19 +60,20 @@ Comparison of IK solvers (damped least squares vs pseudo-inverse)
 -----------------------------------------------------------------
 * Damped least squares is more stable but slow as it gradually solves the IK problem.
 * Pseudo-inverse can be unstable, especially when the jacobian, J, is almost singular.
-* Pseudo-inverse updates the vertex positions faster (I would say it's more intuitive).
+* Pseudo-inverse updates the vertex positions faster (faster response).
 * In conclusion, Damped least squares seems like the better solution for IK because this is more stable and looks correct.
 
 Comparison of skinning methods (linear blend vs dual-quaternion)
 ----------------------------------------------------------------
 * Linear blend skinning is easy and simple to implement.
 * Linear blend skinning causes weird twists (not smooth).
+* Dual-quaternion skinning is more difficult to implement (requires deeper understanding of quaternion).
 * Dual-quaternion skinning can be computationally expensive.
-* Dual-quaternion skinning seems to blend rotations better.
+* Dual-quaternion skinning seems to blend rotations better, especially when it's bent.
 * In conclusion,
   - Linear blend skinning is better when the change of joint location is small (small change in rotation) because it's faster.
     -> Good for games
-  _ Dual-quaternion skinning is better when you need a more accurate and natural blending (but slower).
+  _ Dual-quaternion skinning is better when you need a more accurate, natural, and better quality blending (but possibly slower).
     -> Good for film production
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

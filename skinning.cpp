@@ -126,15 +126,15 @@ void Skinning::applyDQS(const RigidTransform4d * jointSkinTransforms, double * n
       Eigen::Quaterniond t = { 0.0, t_tmp[0], t_tmp[1], t_tmp[2] }; // w, x, y, z
 
       Eigen::Quaterniond q1_j = Eigen::Quaterniond(R); // q1 <- R
-      //if (q1_j.w() < 0) q1_j = Eigen::Quaterniond(-q1_j.w(), q1_j.x(), q1_j.y(), q1_j.z());
 
-      Eigen::Quaterniond scalar = { 0.5, 0.5, 0.5, 0.5 };
-      Eigen::Quaterniond q2_j = scalar * t * q1_j; // q2 <- (1/2 * t * q1)
+      // q2 <- (1/2 * t * q1)
+      Eigen::Quaterniond q2_j = t * q1_j;
+      q2_j.coeffs() = 0.5 * q2_j.coeffs();
 
       // Normalize dual quaternion
       q1_j.normalized();
       q2_j.normalized();
-      
+
       q1.coeffs() += meshSkinningWeights[idx] * q1_j.coeffs(); // q1 += w * q1_j
       q2.coeffs() += meshSkinningWeights[idx] * q2_j.coeffs(); // q2 += w * q2_j
     }
@@ -146,11 +146,9 @@ void Skinning::applyDQS(const RigidTransform4d * jointSkinTransforms, double * n
     // Get final R and T
     Eigen::Matrix3d R = q1.toRotationMatrix(); // R <- q1
 
-    Eigen::Quaterniond scalar = { 2.0, 2.0, 2.0, 2.0 };
-    double sq_size_inv = 1.0 / q1.squaredNorm();
-    Eigen::Quaterniond size = { sq_size_inv, sq_size_inv, sq_size_inv, sq_size_inv };
-    Eigen::Quaterniond q1_inverse = q1.conjugate() * size;
-    Eigen::Quaterniond q_t = scalar * q2 * q1_inverse;// q1.inverse(); // t <- (2 * q2 / q1)
+    // t <- (2 * q2 / q1)
+    Eigen::Quaterniond q_t = q2 * q1.inverse();
+    q_t.coeffs() = 2.0 * q_t.coeffs();
     Eigen::Vector3d t = { q_t.x(), q_t.y(), q_t.z() };
 
     // x |-> t + Rx
