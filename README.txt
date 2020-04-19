@@ -75,6 +75,16 @@ Comparison of skinning methods (linear blend vs dual-quaternion)
   _ Dual-quaternion skinning is better when you need a more accurate and natural blending (but slower).
     -> Good for film production
 
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+Comments
+--------
+This was a pretty fun assignment! The result is so cool and I am happy that I now know how FK, IK, and skinning are working inside of graphics tool such as Maya. Thank you so much for grading my assignments throughout the semester. This course is indeed one of my favorite courses at USC. :)
+
+If you face any issues especially compiling my program or modifying Makefile, please feel free to reach out to me at ymurata@usc.edu.
+
+Thank you!
+
 
 
 
