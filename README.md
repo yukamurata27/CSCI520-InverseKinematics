@@ -42,7 +42,7 @@ Please download XQuartz from [here](https://www.xquartz.org/)
 ## Building
 #### 1) Open Terminal and go to the root directory.
 
-#### 2) Compile ADOL-C:
+#### 2) Compile ADOL-C
 - Install necessary tools to compile ADOL-C:
 ```
 brew install autoconf automake libtool
@@ -68,13 +68,13 @@ make
 make install
 ```
 
-#### 3) Setup OpenGL:
+#### 3) Setup OpenGL
 - Install freeglut:
 ```
 brew install freeglut
 ```
 
-#### 4) Finally, Compile the program in the root directory:
+#### 4) Finally, compile the program in the root directory:
 ```
 cd ../..
 make
