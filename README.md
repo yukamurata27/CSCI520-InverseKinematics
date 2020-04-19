@@ -30,7 +30,7 @@ Implemented on macOS Catalina (version 10.15.3)
 
 
 ## Dependencies
-- XQuartz (Please download from ![here](https://www.xquartz.org/))
+- XQuartz (Please download from [here](ttps://www.xquartz.org/))
 
 
 ## Libraries
