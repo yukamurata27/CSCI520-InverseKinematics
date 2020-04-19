@@ -40,6 +40,7 @@ Core Features
 * FK
 * IK (Damped least squares)
 * Skinning (Linear blend skinning)
+* Animation frames (please see the animation folder)
 
 Extra Features
 * Recursive subdivision for IK when the IK handle moves too far (Both for DLS and PI)
