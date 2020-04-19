@@ -126,10 +126,12 @@ void Skinning::applyDQS(const RigidTransform4d * jointSkinTransforms, double * n
       Eigen::Quaterniond t = { 0.0, t_tmp[0], t_tmp[1], t_tmp[2] }; // w, x, y, z
 
       Eigen::Quaterniond q1_j = Eigen::Quaterniond(R); // q1 <- R
+      if (q1_j.w() < 0) q1_j = { -q1_j.w(), q1_j.x(), q1_j.y(), q1_j.z() };
 
       // q2 <- (1/2 * t * q1)
       Eigen::Quaterniond q2_j = t * q1_j;
       q2_j.coeffs() = 0.5 * q2_j.coeffs();
+      //if (q2_j.w() < 0) q2_j = { -q2_j.w(), q2_j.x(), q2_j.y(), q2_j.z() };
 
       // Normalize dual quaternion
       q1_j.normalized();

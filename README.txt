@@ -70,6 +70,7 @@ Comparison of skinning methods (linear blend vs dual-quaternion)
 * Dual-quaternion skinning is more difficult to implement (requires deeper understanding of quaternion).
 * Dual-quaternion skinning can be computationally expensive.
 * Dual-quaternion skinning seems to blend rotations better, especially when it's bent.
+* Dual-quaternion skinning might cause weird rotation because q and -q are the same rotation. I chose the sign of the quaternions so that the scalar part (w) is always positive. (based on the professor's advice on Piazza). This still causes some artifacts when the rotation is irregular.
 * In conclusion,
   - Linear blend skinning is better when the change of joint location is small (small change in rotation) because it's faster.
     -> Good for games
