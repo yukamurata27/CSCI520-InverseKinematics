@@ -4,16 +4,16 @@ IK and skinning tool as part of USC CSCI 520 in April 2020.
 
 ## Features
 #### 1) Skinning
-- Linear Blend Skinning
+Linear Blend Skinning  
 p = SUM( w * M * p_rest )
 
 #### 2) Forward Kinematics (FK)
-Mg_child = Mg_parent * Ml_child 
+Mg_child = Mg_parent * Ml_child  
 where g is global and l is local.
 
 #### 3) Inverse Kinematics (IK)
-- Damped Least Squares
-min_theta ( 1/2 * | J*dTheta - db |^2 + 1/2 * alpha * | dTheta |^2 )
+Damped Least Squares  
+min_theta ( 1/2 * | J*dTheta - db |^2 + 1/2 * alpha * | dTheta |^2 )  
 where J is a Jacobian matrix.
 
 
